@@ -1,0 +1,266 @@
+---
+title: "Introduction to Statistical Learning"
+output: html_notebook
+---
+
+# Lab 1: Introduction to R
+
+## Basic commands
+
+```{r}
+# creating a vector of numbers
+x = c(1, 2, 3, 4)
+
+# a sequence of number
+z = seq(1, 10)
+
+# we can also add step
+z = seq(-pi, pi, length=50)
+
+# printing
+print(z)
+print(x)
+
+# accessing the value of x[i]
+# index starts at 1 not like python
+y = x[1]
+print(y)
+
+# length of the vector
+len = length(x)
+cat("The length of x is: ", len)
+
+# basic operations
+x = 3
+y = 5
+
+# addition
+print(x + y)
+
+# substraction
+print(x - y)
+
+# multiplication
+print(x * y)
+
+# division
+print(x / y)
+
+# power
+print(x^2)
+
+# listing all saved objects
+list_ob = ls()
+print(list_ob)
+
+# to delete all stored objects 
+rm(list = ls())
+
+# if we try to call x an erro will occur
+#print(x)
+
+# if we want to use a function be we don't know how to use it exactly
+?matrix
+
+# let's create one
+mat = matrix(data = c(1, 2, 3, 4), nrow = 2, ncol = 2, byrow = TRUE)
+print(mat)
+
+# we can access the elements through indexation
+print(mat[1,1])
+print(mat[1,])
+print(mat[,2])
+
+# we can also generate random vectors
+# normal distribution
+rand_vec = rnorm(10)
+print(rand_vec)
+# see also, pnorm, qnorm, dbnorm
+# https://www.stat.umn.edu/geyer/old/5101/rlook.html#:~:text=rnorm%20is%20the%20R%20function,standard%20deviation%20of%20the%20distribution.
+
+# for the sake of reproducibility, we can fix a seed
+set.seed(42)
+x = rnorm(n = 20, mean = 0, sd=1)
+y = 7 + 2*x
+
+# variance, correlation, mean, standard deviation
+print(var(x))
+print(mean(x))
+print(sd(y))
+print(cor(x, y))
+```
+
+## Plotting graphics
+
+```{r}
+# simplest way to plot a graphic
+x = rnorm(100)
+y = rnorm(100)
+# scatter plot
+plot(x, y)
+```
+
+```{r}
+# we can make it better by adding a title and labels
+plot(x, y, xlab="X-axis",
+     ylab="Y-axis", 
+     col="green",
+     main="Title of our Plot")
+```
+
+```{r}
+# these plots can also be saved
+# as pdf
+pdf("../plots/first_plot.pdf")
+plot(x, y, xlab="X-axis",
+     ylab="Y-axis",
+     col="green",
+     main="Title of our Plot")
+# then, we tell R that we are done
+dev.off()
+
+# we can also save it as a jpeg, png
+png("../plots/second_plot.png")
+plot(x, y, xlab="X-axis",
+     ylab="Y-axis",
+     col="red",
+     main="Title of our Plot")
+# then, we tell R that we are done
+dev.off()
+```
+
+## More sophisticated plots
+
+```{r}
+# contours
+# we use it for 3D data as a topolgical map
+# x, y should be in increasing order
+x = seq(-pi, pi, length = 50)
+y = x
+f = outer(x, y, function(x, y) cos(x) + sin(y))
+plot.new()
+contour(x, y, f, nlevels = 45, add = T)
+
+# with a color map
+image(x, y, f)
+
+# or 3D
+persp(x, y, f)
+
+# we can change the angle of view
+
+persp(x, y, f,
+      theta = 30,
+      phi = 60)
+```
+
+## Loading data
+
+```{r}
+# we use the function read.table()
+auto = read.table("../datasets/Auto.data")
+
+# we can view it
+View(auto)
+
+# see the first rows
+head(auto)
+```
+
+Sometimes, `R` may assume that the variable names are part of the data, thus we need to tell him that the first line is actually the header
+
+```{r}
+# header = T (or TRUE)
+Auto = read.table("../datasets/Auto.data",
+                  header = T,
+                  na.strings = "?",
+                  stringsAsFactors = T)
+```
+
+The `na.strings` tells `R` that the variables containing the sign `?` represent a missing element, as for `stringsAsFactors` , it tells `R` to consider variables filled with characters as **qualitative** variables.
+
+We can also use the `csv` format datasets.
+
+```{r}
+# saving in csv format
+write.csv(Auto, "../datasets/auto.csv")
+```
+
+```{r}
+# reloading
+auto = read.csv("../datasets/auto.csv",
+                header = T,
+                  na.strings = "?",
+                  stringsAsFactors = T)
+View(auto)
+
+# dimension of our dataset
+print(dim(auto))
+```
+
+We can also check names of our variables.
+
+```{r}
+names(auto)
+```
+
+And, perhaps we will need to delete rows containing missing data.
+
+```{r}
+# no missing data
+auto = na.omit(auto)
+print(dim(auto))
+```
+
+## Additional Graphical and Numerical Summaries
+
+We may want to plot some of the variables in our data set, but `R` can't access them.
+
+```{r}
+# first solution
+plot(auto$mpg, auto$horsepower)
+```
+
+```{r}
+# second solution
+attach(auto)
+plot(cylinders, mpg)
+```
+
+We may want to convert some numerical variables into quantitative ones.
+
+```{r}
+# convert
+cylinders = as.factor(cylinders)
+
+#plot 
+plot(cylinders, mpg)
+```
+
+A box plot is automatically produced if the x-axis variable is qualitative.
+
+We can also plot histograms:
+
+```{r}
+hist(mpg,
+     col='red')
+# we can change number of breaks
+hist(mpg,
+     col = 5,
+     breaks = 15)
+```
+
+If we want some fast representation of all the scatter plots, then we can use the function called `pairs`.
+
+```{r}
+pairs(auto)
+# to identify the value of a variable in a scatter plot for a pair
+plot(horsepower, mpg)
+identify(horsepower, mpg, cylinders)
+```
+
+Finally, we may want to have a summary for all the central tendency and position stats for all variables
+
+```{r}
+summary(auto)
+```
