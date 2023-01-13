@@ -210,3 +210,106 @@ summary(lm.fit)
 ```
 
 ## Non linear transformations of the predictors
+
+The `lm()` function can also accommodate non-linear transformations of the predictors. For instance, given a predictor $X$ we can create a predictor $X^2$ using `I(X^2)`.
+
+It is mandatory to use the function `I()`
+
+```{r}
+lm.fit2 = lm(medv ~ lstat + I(lstat^2),
+             data = Boston)
+summary(lm.fit2)
+```
+
+As we can see, the $p$-value associated with the quadratic term leads to an improvement. We can use the `anova()` function.
+**Analysis of variance** (**ANOVA**) is a collection of [statistical models](https://en.wikipedia.org/wiki/Statistical_model "Statistical model") and their associated estimation procedures (such as the "variation" among and between groups) used to analyze the differences among means.
+
+```{r}
+# anova()
+lm.fit = lm(medv ~ lstat, data = Boston)
+anova(lm.fit, lm.fit2)
+```
+
+**Interpretation**
+
+-   **Model** $1$ \> Represents the model with only one predictor.
+
+-   **Model** $2$ \> Represents the model with the quadratic model
+
+    The anova function performs a hypothesis test to compare the two models.
+
+-   **Null Hypothesis** \> the two models fit the data equally well
+
+-   **Alternative Hypothesis** \> the full model is superior
+
+    The **F-statistic** is $135$ and the associated \$p\$-value is virtually $0$. Thus, the full model is superior.
+
+    ```{r}
+    par(mfrow = c(2, 2))
+    plot(lm.fit2)
+    ```
+
+The pattern now has disappeared.
+
+A better approach to do polynomial regression, we will use the function `poly()` instead of `I()`.
+
+```{r}
+lm.fit5 = lm(medv ~ poly(lstat, 5), data = Boston)
+summary(lm.fit5)
+```
+
+-   Didn't understand this part \>\>
+
+By default, the `poly()` function orthogonalizes the predictors: this means that the features are not simply a sequence of powers of the argument.
+
+-   We can also use other transformations like `log`.
+
+## Qualitative predictors
+
+We will see now how to treat qualitative predictors, with the `carseats`.
+
+```{r}
+# carseats dataset
+head(Carseats)
+```
+
+```{r}
+# fitting the model
+lm.fit <- lm(Sales ~ . + Income:Advertising + Price:Age, 
+    data = Carseats)
+summary(lm.fit)
+```
+
+`R` encodes the qualitative variables, in order to retrieve the way the data was encoded.
+
+```{r}
+contrasts(Carseats$ShelveLoc)
+```
+
+```{r}
+?contrasts
+```
+
+**Stackoverflow Notes**
+
+-   Contrasts are needed when you fit linear models with factors (i.e. categorical variables) as explanatory variables. The contrast specifies how the levels of the factors will be coded into a family of numeric dummy variables for fitting the model.
+
+-   Here are some good notes for the different varieties of contrasts used: <http://www.unc.edu/courses/2006spring/ecol/145/001/docs/lectures/lecture26.htm>
+
+-   When the contrasts used are changed, the model remains the same in terms of the underlying joint probability distributions allowed. Only its parametrization changes. The fitted values remain the same as well. Also, once you have the value of the parameters for one choice of contrasts, it is easy to derive what the value of the parameters for another choice of contrasts would have been.
+
+## Create Functions
+
+```{r}
+# loading libraries
+LoadLibraries= function() {
+  library(ISLR2)
+  library(MASS)
+  print("Libraries correctly loaded.")
+}
+```
+
+```{r}
+# test 
+LoadLibraries()
+```
