@@ -149,7 +149,7 @@ Before proceeding, here is how we interpret the significance codes in `R`
 
 -   *wt* has a p-value of **.000364**. Since this value is in the range **[0, 0.001]**, it has a significance code of **\*\*\***
 
-> If we used an alpha level of $\alpha = 0.05$ to determine which predictors were significant in this regression model, we\'d say that *hp* and *wt* are statistically significant predictors while *drat* is not.
+> If we used an alpha level of $\alpha = 0.05$ to determine which predictors were significant in this regression model, we'd say that *hp* and *wt* are statistically significant predictors while *drat* is not.
 
 ------------------------------------------------------------------------
 
@@ -221,8 +221,7 @@ lm.fit2 = lm(medv ~ lstat + I(lstat^2),
 summary(lm.fit2)
 ```
 
-As we can see, the $p$-value associated with the quadratic term leads to an improvement. We can use the `anova()` function.
-**Analysis of variance** (**ANOVA**) is a collection of [statistical models](https://en.wikipedia.org/wiki/Statistical_model "Statistical model") and their associated estimation procedures (such as the "variation" among and between groups) used to analyze the differences among means.
+As we can see, the $p$-value associated with the quadratic term leads to an improvement. We can use the `anova()` function. **Analysis of variance** (**ANOVA**) is a collection of [statistical models](https://en.wikipedia.org/wiki/Statistical_model "Statistical model") and their associated estimation procedures (such as the "variation" among and between groups) used to analyze the differences among means.
 
 ```{r}
 # anova()
